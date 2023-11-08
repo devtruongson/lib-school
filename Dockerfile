@@ -1,3 +1,4 @@
+
 # Sử dụng một hình ảnh Node.js LTS nhưm làm hình ảnh cơ sở
 FROM node:lts
 
@@ -5,9 +6,8 @@ FROM node:lts
 WORKDIR /app
 
 COPY package*.json ./
-COPY dist/ ./dist/
-RUN npm install --production
+RUN npm install --silent
 EXPOSE 8081
+COPY . .
 
-# Lệnh khởi chạy ứng dụng NestJS
-CMD ["node", "dist/main.js"]
+CMD ["npm", "run", "start:prod"]
