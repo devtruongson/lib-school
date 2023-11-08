@@ -8,7 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 COPY dist/ ./dist/
 
+# Cài đặt các phụ thuộc cần thiết
 RUN npm install --production
+# Mở cổng mà ứng dụng sẽ lắng nghe trên (thường là cổng 3000)
 EXPOSE 8081
 
 # Lệnh khởi chạy ứng dụng NestJS
