@@ -10,22 +10,34 @@ export class Profile {
     @Column()
     avatar_url: string;
 
-    @Column()
+    @Column({
+        default: null,
+    })
     phoneNumber: string;
 
-    @Column()
+    @Column({
+        default: null,
+    })
     address: string;
 
-    @Column()
+    @Column({
+        default: null,
+    })
     school: string;
 
-    @Column()
+    @Column({
+        default: null,
+    })
     class: string;
 
-    @Column()
+    @Column({
+        default: null,
+    })
     birthday: Date;
 
-    @Column('longtext')
+    @Column('longtext', {
+        default: null,
+    })
     description: string;
 
     @Column({

@@ -23,27 +23,39 @@ __decorate([
     __metadata("design:type", String)
 ], Profile.prototype, "avatar_url", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        default: null,
+    }),
     __metadata("design:type", String)
 ], Profile.prototype, "phoneNumber", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        default: null,
+    }),
     __metadata("design:type", String)
 ], Profile.prototype, "address", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        default: null,
+    }),
     __metadata("design:type", String)
 ], Profile.prototype, "school", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        default: null,
+    }),
     __metadata("design:type", String)
 ], Profile.prototype, "class", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        default: null,
+    }),
     __metadata("design:type", Date)
 ], Profile.prototype, "birthday", void 0);
 __decorate([
-    (0, typeorm_1.Column)('longtext'),
+    (0, typeorm_1.Column)('longtext', {
+        default: null,
+    }),
     __metadata("design:type", String)
 ], Profile.prototype, "description", void 0);
 __decorate([

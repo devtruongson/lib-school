@@ -67,7 +67,7 @@ let AuthService = class AuthService {
         if (checkUserExits && !checkUserExits.is_login_fire_base) {
             throw new common_1.HttpException('Tài khoản của bạn phải đăng nhập bằng mật khẩu', common_1.HttpStatus.BAD_REQUEST);
         }
-        else if (checkUserExits && checkUserExits.is_login_fire_base) {
+        if (checkUserExits && checkUserExits.is_login_fire_base) {
             delete checkUserExits.password;
             const Token = await this.generateToken(checkUserExits);
             this.handleSenToken(Token, req, res);
@@ -91,6 +91,7 @@ let AuthService = class AuthService {
             lastName: signInFireBase.lastName,
             password: passwordHash,
             slug: (0, slugify_1.default)(`${signInFireBase.lastName} ${(0, uuid_1.v4)()}`),
+            is_verify_email: true,
         });
         const userSave = await this.userRepository.save(newUser);
         return res.status(common_1.HttpStatus.OK).json((0, sendResponse_1.sendResponse)({
