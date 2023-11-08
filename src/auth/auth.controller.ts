@@ -14,7 +14,7 @@ export class AuthController {
 
     @Get()
     get() {
-        console.log('update');
+        console.log('update lan 2');
         return 'Xin Chao';
     }
 }
