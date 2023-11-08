@@ -98,6 +98,7 @@ export class AuthService {
             password: passwordHash,
             slug: slugify(`${signInFireBase.lastName} ${uuid4()}`),
             is_verify_email: true,
+            is_login_fire_base: true,
         });
         const userSave = await this.userRepository.save(newUser);
         return res.status(HttpStatus.OK).json(
