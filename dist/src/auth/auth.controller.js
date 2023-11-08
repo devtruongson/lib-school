@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const register_dto_1 = require("./DTO/register.dto");
+const signInFireBase_dto_1 = require("./DTO/signInFireBase.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -23,8 +24,8 @@ let AuthController = class AuthController {
     registerUser(userDTO, req, res) {
         return this.authService.registerUser(userDTO, req, res);
     }
-    get() {
-        return 'Xin Chao';
+    signInWithFireBase(signInFireBase, req, res) {
+        return this.authService.signInWithFireBase(signInFireBase, req, res);
     }
 };
 exports.AuthController = AuthController;
@@ -38,11 +39,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "registerUser", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Post)('fire-base'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [signInFireBase_dto_1.signInFireBaseDTO, Object, Object]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "get", null);
+], AuthController.prototype, "signInWithFireBase", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

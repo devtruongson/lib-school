@@ -14,13 +14,14 @@ const typeorm_1 = require("@nestjs/typeorm");
 const User_1 = require("../typeorm/entities/User");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("../utils/constants");
+const Profile_1 = require("../typeorm/entities/Profile");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([User_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([User_1.User, Profile_1.Profile]),
             jwt_1.JwtModule.register({
                 global: true,
                 secret: constants_1.constants.jwt_secret,

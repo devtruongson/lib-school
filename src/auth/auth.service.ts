@@ -11,12 +11,15 @@ import { IJwtPayload } from 'src/utils/interface';
 import { v4 as uuid4 } from 'uuid';
 import slugify from 'slugify';
 import { sendResponse } from 'src/helpers/sendResponse';
+import { signInFireBaseDTO } from './DTO/signInFireBase.dto';
+import { Profile } from 'src/typeorm/entities/Profile';
 
 const saltOrRounds: number = 10;
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(Profile) private readonly profileRepository: Repository<Profile>,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -57,6 +60,52 @@ export class AuthService {
                 HttpStatus.BAD_REQUEST,
             );
         }
+    }
+
+    async signInWithFireBase(signInFireBase: signInFireBaseDTO, req: Request, res: Response) {
+        const checkUserExits: User | null = await this.checkUserExits(signInFireBase.email);
+
+        if (checkUserExits && !checkUserExits.is_login_fire_base) {
+            throw new HttpException('Tài khoản của bạn phải đăng nhập bằng mật khẩu', HttpStatus.BAD_REQUEST);
+        } else if (checkUserExits && checkUserExits.is_login_fire_base) {
+            delete checkUserExits.password;
+            const Token: { access_token: string; refresh_token: string } = await this.generateToken(checkUserExits);
+            this.handleSenToken(Token, req, res);
+            return res.status(HttpStatus.OK).json(
+                sendResponse({
+                    statusCode: HttpStatus.OK,
+                    data: {
+                        user: checkUserExits,
+                    },
+                    message: 'You have successfully login | Bạn đã đăng nhập thành công!',
+                }),
+            );
+        }
+
+        const newProfile = this.profileRepository.create({
+            avatar_url: signInFireBase.avatar_url,
+        });
+        const saveProfile = await this.profileRepository.save(newProfile);
+        const passwordHash = await this.generateHashPassword('null');
+
+        const newUser = this.userRepository.create({
+            email: signInFireBase.email,
+            profile: saveProfile,
+            fistName: 'user',
+            lastName: signInFireBase.lastName,
+            password: passwordHash,
+            slug: slugify(`${signInFireBase.lastName} ${uuid4()}`),
+        });
+        const userSave = await this.userRepository.save(newUser);
+        return res.status(HttpStatus.OK).json(
+            sendResponse({
+                statusCode: HttpStatus.OK,
+                data: {
+                    user: userSave,
+                },
+                message: 'You have successfully login | Bạn đã đăng nhập thành công!',
+            }),
+        );
     }
 
     checkUserExits(email: string): Promise<User | null> {

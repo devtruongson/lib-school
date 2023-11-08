@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { registerDTO } from './DTO/register.dto';
 import { Response, Request } from 'express';
+import { signInFireBaseDTO } from './DTO/signInFireBase.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -12,9 +13,8 @@ export class AuthController {
         return this.authService.registerUser(userDTO, req, res);
     }
 
-    @Get()
-    get() {
-        console.log('update lan 2');
-        return 'Xin Chao';
+    @Post('fire-base')
+    signInWithFireBase(@Body() signInFireBase: signInFireBaseDTO, @Req() req: Request, @Res() res: Response) {
+        return this.authService.signInWithFireBase(signInFireBase, req, res);
     }
 }

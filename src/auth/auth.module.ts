@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/typeorm/entities/User';
 import { JwtModule } from '@nestjs/jwt';
 import { constants } from '../utils/constants';
+import { Profile } from 'src/typeorm/entities/Profile';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([User, Profile]),
         JwtModule.register({
             global: true,
             secret: constants.jwt_secret,
