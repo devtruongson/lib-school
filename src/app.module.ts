@@ -8,6 +8,9 @@ import { Book } from './typeorm/entities/Book';
 import { Profile } from './typeorm/entities/Profile';
 import { MailerModule } from './mailer/mailer.module';
 import { UserModule } from './user/user.module';
+import { BookModule } from './book/book.module';
+import { Images } from './typeorm/entities/Image';
+import { Categories } from './typeorm/entities/Cate';
 
 @Module({
     imports: [
@@ -20,12 +23,13 @@ import { UserModule } from './user/user.module';
             username: 'root',
             password: 'fstack@1234',
             database: 'lib_school',
-            entities: [User, Order, Book, Profile],
+            entities: [User, Order, Book, Profile, Images, Categories],
             synchronize: true,
             autoLoadEntities: true,
         }),
         MailerModule,
         UserModule,
+        BookModule,
     ],
 })
 export class AppModule {}

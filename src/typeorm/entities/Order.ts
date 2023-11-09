@@ -30,7 +30,7 @@ export class Order {
 
     @ManyToMany(() => Book)
     @JoinTable()
-    followers: Book[];
+    books: Book[];
 
     @Column({
         default: () => 'CURRENT_TIMESTAMP',
