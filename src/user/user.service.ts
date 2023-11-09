@@ -24,6 +24,7 @@ export class UserService {
 
         return {
             id: checkUser.id,
+            role: checkUser.role,
             is_login_fire_base: checkUser.is_login_fire_base,
             is_verify_email: checkUser.is_verify_email,
         };
