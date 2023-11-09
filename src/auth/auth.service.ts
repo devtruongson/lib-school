@@ -246,6 +246,7 @@ export class AuthService {
 
     handleSenToken(token: { access_token: string; refresh_token: string }, Req: Request, Res: Response): void {
         Res.cookie('access_token', token.access_token, {
+            domain: 'localhost',
             httpOnly: true,
             path: '/',
             sameSite: 'strict',
@@ -254,6 +255,7 @@ export class AuthService {
         });
 
         Res.cookie('refresh_token', token.refresh_token, {
+            domain: 'localhost',
             httpOnly: true,
             path: '/',
             sameSite: 'strict',
