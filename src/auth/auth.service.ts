@@ -246,19 +246,17 @@ export class AuthService {
 
     handleSenToken(token: { access_token: string; refresh_token: string }, Req: Request, Res: Response): void {
         Res.cookie('access_token', token.access_token, {
-            domain: 'http://localhost:3000',
             httpOnly: true,
             path: '/',
-            sameSite: 'strict',
+            sameSite: 'none',
             secure: true,
             maxAge: new Date(Number(new Date()) + 31536000000).getTime(),
         });
 
         Res.cookie('refresh_token', token.refresh_token, {
-            domain: 'http://localhost:3000',
             httpOnly: true,
             path: '/',
-            sameSite: 'strict',
+            sameSite: 'none',
             secure: true,
             maxAge: new Date(Number(new Date()) + 31536000000).getTime(),
         });
