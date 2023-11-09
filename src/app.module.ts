@@ -7,6 +7,7 @@ import { Order } from './typeorm/entities/Order';
 import { Book } from './typeorm/entities/Book';
 import { Profile } from './typeorm/entities/Profile';
 import { MailerModule } from './mailer/mailer.module';
+import { UserModule } from './user/user.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { MailerModule } from './mailer/mailer.module';
             autoLoadEntities: true,
         }),
         MailerModule,
+        UserModule,
     ],
 })
 export class AppModule {}
