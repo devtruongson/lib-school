@@ -180,10 +180,9 @@ export class AuthService {
 
     async refreshToken(req: Request, res: Response): Promise<any> {
         const user = req.user as IJwtPayload;
-
-        const checkUserExits: User | null = await this.checkUserExits(user.email)
-        if(!checkUserExits) {
-            throw new UserNotExitsException()
+        const checkUserExits: User | null = await this.checkUserExits(user.email);
+        if (!checkUserExits) {
+            throw new UserNotExitsException();
         }
 
         delete checkUserExits.password;

@@ -23,8 +23,8 @@ import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 export class AuthModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(AuthMiddleware).forRoutes({
-            path: '/api/v1/auth/refresh-token',
+            path: '/auth/refresh-token',
             method: RequestMethod.POST,
-        })
+        });
     }
 }
