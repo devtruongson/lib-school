@@ -27,3 +27,4 @@ services:
       DB_HOST: db
       port: 3306
       username: fstack
+      evironment: pro

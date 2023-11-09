@@ -20,6 +20,9 @@ export class User {
     })
     lastName: string;
 
+    @Column({})
+    uuid_code: string;
+
     @Column({
         unique: true,
         nullable: false,
