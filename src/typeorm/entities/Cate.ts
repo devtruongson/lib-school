@@ -16,6 +16,14 @@ export class Categories {
     @Column('longtext')
     description: string;
 
+    @Column('longtext')
+    description_markdown: string;
+
+    @Column({
+        default: true,
+    })
+    is_active: boolean;
+
     @Column({
         default: () => 'CURRENT_TIMESTAMP',
     })

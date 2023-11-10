@@ -1,5 +1,5 @@
-import { HttpStatus } from '@nestjs/common';
-export function sendResponse(responseData: { data?: any; statusCode: HttpStatus; message: string }) {
+import { IRes } from 'src/utils/interface';
+export function sendResponse(responseData: IRes): IRes {
     return {
         statusCode: responseData.statusCode,
         message: responseData.message,

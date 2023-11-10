@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 import { Images } from './typeorm/entities/Image';
 import { Categories } from './typeorm/entities/Cate';
+import { CateModule } from './cate/cate.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { Categories } from './typeorm/entities/Cate';
         MailerModule,
         UserModule,
         BookModule,
+        CateModule,
     ],
 })
 export class AppModule {}

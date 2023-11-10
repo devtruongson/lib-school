@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 export interface IJwtPayload {
     id: number;
     fistName: string;
@@ -12,3 +14,8 @@ export interface IVerifyAccount {
     token_url: string;
 }
 
+export interface IRes {
+    data?: any;
+    statusCode: HttpStatus;
+    message: string;
+}
