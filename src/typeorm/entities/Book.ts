@@ -17,6 +17,9 @@ export class Book {
     @Column('longtext')
     description: string;
 
+    @Column('longtext')
+    description_markdown: string;
+
     @Column()
     thumbnail_url: string;
 
@@ -48,7 +51,7 @@ export class Book {
 
     @ManyToMany(() => Categories)
     @JoinTable()
-    books: Categories[];
+    categories: Categories[];
 
     @Column({
         default: () => 'CURRENT_TIMESTAMP',

@@ -9,6 +9,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Request, Response } from 'express';
 import { isEmpty } from 'lodash';
+import { sendResponse } from 'src/helpers/sendResponse';
 import { ROLE_APP_MANAGE } from 'src/utils/enum';
 import { IJwtPayload } from 'src/utils/interface';
 
@@ -30,7 +31,12 @@ export class JwtAdminMiddleware implements NestMiddleware {
             try {
                 const checkAccessToken: IJwtPayload = await this.jwtService.verifyAsync(access_token);
                 if (checkAccessToken.role !== ROLE_APP_MANAGE.admin) {
-                    throw new ForbiddenException();
+                    return res.status(HttpStatus.FORBIDDEN).send(
+                        sendResponse({
+                            message: 'Tài Khoản Của Bạn Không Có Quyền Truy Cập!',
+                            statusCode: HttpStatus.FORBIDDEN,
+                        }),
+                    );
                 }
                 next();
             } catch (error) {
