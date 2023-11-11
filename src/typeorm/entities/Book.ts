@@ -14,6 +14,12 @@ export class Book {
     })
     title: string;
 
+    @Column()
+    meta_description: string;
+
+    @Column()
+    meta_title: string;
+
     @Column('longtext')
     description: string;
 

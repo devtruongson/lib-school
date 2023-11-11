@@ -5,6 +5,9 @@ export class createDTO {
     title: string;
 
     @IsNotEmpty()
+    meta_description: string;
+
+    @IsNotEmpty()
     description: string;
 
     @IsNotEmpty()

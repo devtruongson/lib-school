@@ -52,6 +52,8 @@ export class BookService {
             thumbnail_url: thumbnail_url.filename,
             slug: slugify(`${data.title} ${uuid4()}`),
             categories: checkCate,
+            meta_description: data.meta_description,
+            meta_title: data.title,
         });
 
         const bookSave = await this.bookRepository.save(bookCreate);
@@ -162,6 +164,8 @@ export class BookService {
             thumbnail_url,
             slug: slugify(`${data.title} ${uuid4()}`),
             categories: checkCate,
+            meta_description: data.meta_description,
+            meta_title: data.title,
         });
 
         return sendResponse({
