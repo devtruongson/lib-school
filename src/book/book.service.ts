@@ -28,10 +28,7 @@ export class BookService {
 
     async createBook(data: createDTO, files: Express.Multer.File[]): Promise<IRes> {
         const [thumbnail_url, ...images] = files;
-        const checkCate: Categories[] | null = null;
-
-        console.log(data);
-        console.log(files);
+        const checkCate: Categories[] | null = [];
 
         await Promise.all(
             data.categories.map(async (item: number) => {
@@ -46,7 +43,7 @@ export class BookService {
             }),
         );
 
-        if (!checkCate) {
+        if (checkCate.length === 0) {
             throw new HttpException('Danh Mục Sách Bạn Chọn Không Tồn Tại Trong Hệ Thống!', HttpStatus.BAD_REQUEST);
         }
 
