@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { createCateDTO } from './dto/createCate.dto';
 import { IRes } from 'src/utils/interface';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -48,5 +48,28 @@ export class CateService {
 
     async getAllCates(options: IPaginationOptions): Promise<Pagination<Categories>> {
         return paginate<Categories>(this.cateRepository, options);
+    }
+
+    async filterAll(): Promise<IRes> {
+        const cates: Categories[] | [] = await this.cateRepository.find({
+            where: {
+                is_active: true,
+            },
+        });
+
+        if (cates && cates.length === 0) {
+            throw new BadRequestException();
+        }
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'Thành Công!',
+            data: cates.map((item: Categories) => {
+                return {
+                    value: item.id,
+                    label: item.title,
+                };
+            }),
+        });
     }
 }

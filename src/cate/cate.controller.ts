@@ -33,4 +33,9 @@ export class CateController {
             route: ConfigEnum.URL_BE_CATE_GET_ALL,
         });
     }
+
+    @Get('/filter-all')
+    filterAll(): Promise<IRes> {
+        return this.cateService.filterAll();
+    }
 }
