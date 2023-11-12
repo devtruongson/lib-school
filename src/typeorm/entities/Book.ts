@@ -55,10 +55,7 @@ export class Book {
     })
     view_book: number;
 
-    @ManyToMany(() => Categories, {
-        cascade: true,
-        onDelete: 'CASCADE',
-    })
+    @ManyToMany(() => Categories)
     @JoinTable()
     categories: Categories[];
 
