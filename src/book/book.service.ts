@@ -13,6 +13,8 @@ import { v4 as uuid4 } from 'uuid';
 import slugify from 'slugify';
 import { updateStatusDTO } from './dto/updateStatus.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { MailerService } from 'src/mailer/mailer.service';
+import { User } from 'src/typeorm/entities/User';
 
 @Injectable()
 export class BookService {
@@ -20,6 +22,8 @@ export class BookService {
         @InjectRepository(Book) private readonly bookRepository: Repository<Book>,
         @InjectRepository(Categories) private readonly cateRepository: Repository<Categories>,
         @InjectRepository(Images) private readonly imageRepository: Repository<Images>,
+        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        private readonly mailService: MailerService,
     ) {}
 
     async createBook(data: createDTO, files: Express.Multer.File[]): Promise<IRes> {
@@ -57,6 +61,17 @@ export class BookService {
         });
 
         const bookSave = await this.bookRepository.save(bookCreate);
+        const users = await this.userRepository.find();
+
+        await this.mailService.notifyBookNews({
+            emails: users.map((user) => user.email),
+            html: `
+                <h1>Chúng Tôi Xin Thông Báo Hệ Thống Thư Viện Đã Có Thêm Sách Mới</h1>
+                <p>Tên Sách: ${data.title}</p>
+                <p>Mô Tả Sách: ${data.description}</p>
+                <blockquote>Bạn Hãy Ghé Thăm Để Mượn Ngay Hôm Nay Nhé!</blockquote>
+            `,
+        });
 
         if (images && images.length > 0) {
             images.forEach(async (item: Express.Multer.File) => {

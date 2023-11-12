@@ -7,16 +7,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Book } from 'src/typeorm/entities/Book';
 import { Categories } from 'src/typeorm/entities/Cate';
 import { Images } from 'src/typeorm/entities/Image';
+import { User } from 'src/typeorm/entities/User';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Module({
     imports: [
         MulterModule.register({
             dest: './files',
         }),
-        TypeOrmModule.forFeature([Book, Categories, Images]),
+        TypeOrmModule.forFeature([Book, Categories, Images, User]),
     ],
     controllers: [BookController],
-    providers: [BookService],
+    providers: [BookService, MailerService],
 })
 export class BookModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

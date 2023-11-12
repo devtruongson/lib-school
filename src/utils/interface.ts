@@ -19,3 +19,13 @@ export interface IRes {
     statusCode: HttpStatus;
     message: string;
 }
+
+export interface IDataSendMailUser {
+    email: string;
+    html: string;
+}
+
+export interface IDataSendBookNews {
+    emails: string[];
+    html: string;
+}

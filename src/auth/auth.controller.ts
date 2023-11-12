@@ -33,4 +33,11 @@ export class AuthController {
     refreshToken(@Req() req: Request, @Res() res: Response): Promise<any> {
         return this.authService.refreshToken(req, res);
     }
+
+    @Post('/logout')
+    handleLogout(req: Request, res: Response) {
+        res.clearCookie('access_token');
+        res.clearCookie('refresh_token');
+        res.status(200).json('ok');
+    }
 }

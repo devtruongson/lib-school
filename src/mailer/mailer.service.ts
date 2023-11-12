@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MailerService as MailerServiceConfig } from '@nestjs-modules/mailer';
-import { IVerifyAccount } from 'src/utils/interface';
+import { IDataSendBookNews, IDataSendMailUser, IVerifyAccount } from 'src/utils/interface';
 
 @Injectable()
 export class MailerService {
     constructor(private readonly mailerService: MailerServiceConfig) {}
 
-    sendEmailForgotPassword(info: any) {
+    sendEmailForgotPassword(info: any): Promise<any> {
         try {
             return this.mailerService.sendMail({
                 to: info.email,
@@ -46,7 +46,7 @@ export class MailerService {
         }
     }
 
-    emailVerifyAccount(data: IVerifyAccount) {
+    emailVerifyAccount(data: IVerifyAccount): Promise<any> {
         try {
             return this.mailerService.sendMail({
                 to: data.email,
@@ -75,5 +75,23 @@ export class MailerService {
                 HttpStatus.BAD_REQUEST,
             );
         }
+    }
+
+    sendEmailWithUSer(data: IDataSendMailUser): Promise<any> {
+        return this.mailerService.sendMail({
+            to: data.email,
+            subject: 'Thư Mới',
+            from: 'Vui lòng không trả lời email này!',
+            html: data.html,
+        });
+    }
+
+    notifyBookNews(data: IDataSendBookNews): Promise<any> {
+        return this.mailerService.sendMail({
+            to: data.emails,
+            subject: 'Thư Mới',
+            from: 'Vui lòng không trả lời email này!',
+            html: data.html,
+        });
     }
 }
