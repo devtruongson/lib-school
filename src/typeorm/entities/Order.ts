@@ -25,7 +25,10 @@ export class Order {
     })
     expire_give_book: Date;
 
-    @ManyToOne(() => User, (user) => user.orders)
+    @ManyToOne(() => User, (user) => user.orders, {
+        cascade: true,
+        onDelete: 'CASCADE',
+    })
     user: User;
 
     @ManyToMany(() => Book)

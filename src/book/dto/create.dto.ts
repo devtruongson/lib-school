@@ -13,13 +13,11 @@ export class createDTO {
     @IsNotEmpty()
     description_markdown: string;
 
-    @IsNumber()
     @IsNotEmpty()
-    @Min(1)
-    stock: number;
+    stock: string;
 
-    @IsBoolean()
-    is_active: boolean;
+    @IsNotEmpty()
+    is_active: 'true' | 'false';
 
     @IsNotEmpty()
     @IsArray()

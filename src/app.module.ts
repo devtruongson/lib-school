@@ -13,6 +13,8 @@ import { Images } from './typeorm/entities/Image';
 import { Categories } from './typeorm/entities/Cate';
 import { CateModule } from './cate/cate.module';
 import { UploadModule } from './upload/upload.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { OrderModule } from './order/order.module';
 
 @Module({
     imports: [
@@ -34,6 +36,8 @@ import { UploadModule } from './upload/upload.module';
         BookModule,
         CateModule,
         UploadModule,
+        ScheduleModule.forRoot(),
+        OrderModule,
     ],
 })
 export class AppModule {}
