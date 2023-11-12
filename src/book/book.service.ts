@@ -30,6 +30,9 @@ export class BookService {
         const [thumbnail_url, ...images] = files;
         const checkCate: Categories[] | null = null;
 
+        console.log(data);
+        console.log(files);
+
         await Promise.all(
             data.categories.map(async (item: number) => {
                 const category = await this.cateRepository.findOne({
