@@ -15,6 +15,7 @@ import { updateStatusDTO } from './dto/updateStatus.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { MailerService } from 'src/mailer/mailer.service';
 import { User } from 'src/typeorm/entities/User';
+import { updateStatusImage } from './dto/updateStatusImage.dto';
 
 @Injectable()
 export class BookService {
@@ -230,5 +231,34 @@ export class BookService {
 
     findAllBooksByAdmin(options: IPaginationOptions): Promise<Pagination<Book>> {
         return paginate<Book>(this.bookRepository, options);
+    }
+
+    async detailBook(slug: string): Promise<IRes> {
+        const book: Book | null = await this.bookRepository.findOne({
+            where: {
+                slug,
+            },
+            relations: ['images', 'categories'],
+        });
+
+        if (!book) {
+            throw new HttpException('Book không tồn tại trong hệ thống!', HttpStatus.BAD_REQUEST);
+        }
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+            data: book,
+        });
+    }
+
+    async updateStatusImage(data: updateStatusImage): Promise<IRes> {
+        await this.bookRepository.update(data.id, {
+            is_active: data.is_active,
+        });
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+        });
     }
 }

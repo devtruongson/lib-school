@@ -86,6 +86,15 @@ export class MailerService {
         });
     }
 
+    sendEmailWithManyUSer(data: { email: string[]; html: string }): Promise<any> {
+        return this.mailerService.sendMail({
+            to: data.email,
+            subject: 'Thư Mới',
+            from: 'Vui lòng không trả lời email này!',
+            html: data.html,
+        });
+    }
+
     notifyBookNews(data: IDataSendBookNews): Promise<any> {
         return this.mailerService.sendMail({
             to: data.emails,

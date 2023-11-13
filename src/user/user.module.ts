@@ -30,6 +30,10 @@ export class UserModule implements NestModule {
                     path: '/user/send-email',
                     method: RequestMethod.POST,
                 },
+                {
+                    path: '/user/send-email-many-users',
+                    method: RequestMethod.POST,
+                },
             );
     }
 }

@@ -17,6 +17,7 @@ import { User } from 'src/typeorm/entities/User';
 import { ConfigEnum } from 'src/utils/enum';
 import { sendEmailUserDTO } from './dto/sendEmailUser.dto';
 import { IRes } from 'src/utils/interface';
+import { sendEmailManyUserDTO } from './dto/sendEmailManyUser.dto';
 
 @Controller('user')
 export class UserController {
@@ -44,5 +45,10 @@ export class UserController {
     @Post('/send-email')
     sendEmailUser(@Body() sendEmailUser: sendEmailUserDTO): Promise<IRes> {
         return this.userService.sendEmailUser(sendEmailUser);
+    }
+
+    @Post('/send-email-many-users')
+    sendEmailManyUser(@Body() sendEmailManyUser: sendEmailManyUserDTO): Promise<IRes> {
+        return this.userService.sendEmailManyUser(sendEmailManyUser);
     }
 }

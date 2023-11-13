@@ -9,6 +9,7 @@ import { userSessionSerializerDTO } from './dto/userSessionSerializerDTO';
 import { sendEmailUserDTO } from './dto/sendEmailUser.dto';
 import { MailerService } from 'src/mailer/mailer.service';
 import { sendResponse } from 'src/helpers/sendResponse';
+import { sendEmailManyUserDTO } from './dto/sendEmailManyUser.dto';
 
 @Injectable()
 export class UserService {
@@ -52,6 +53,18 @@ export class UserService {
         try {
             await this.mailService.sendEmailWithUSer(data);
 
+            return sendResponse({
+                statusCode: HttpStatus.OK,
+                message: 'Bạn Đã Gửi Thành Công!',
+            });
+        } catch (error) {
+            throw new BadRequestException();
+        }
+    }
+
+    async sendEmailManyUser(sendEmailManyUser: sendEmailManyUserDTO): Promise<IRes> {
+        try {
+            await this.mailService.sendEmailWithManyUSer(sendEmailManyUser);
             return sendResponse({
                 statusCode: HttpStatus.OK,
                 message: 'Bạn Đã Gửi Thành Công!',

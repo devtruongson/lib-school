@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     DefaultValuePipe,
@@ -26,6 +27,7 @@ import { updateStatusDTO } from './dto/updateStatus.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Book } from 'src/typeorm/entities/Book';
 import { ConfigEnum } from 'src/utils/enum';
+import { updateStatusImage } from './dto/updateStatusImage.dto';
 
 @Controller('book')
 export class BookController {
@@ -42,6 +44,20 @@ export class BookController {
             cacheQueries: true,
             route: ConfigEnum.URL_BE_CATE_GET_ALL,
         });
+    }
+
+    @Get('/detail/:slug')
+    detailBook(@Param('slug') slug: string) {
+        if (!slug) {
+            throw new BadRequestException();
+        }
+
+        return this.bookService.detailBook(slug);
+    }
+
+    @Patch('/update-image-status')
+    updateStatusImage(@Body() data: updateStatusImage): Promise<IRes> {
+        return this.bookService.updateStatusImage(data);
     }
 
     @Post('')
