@@ -261,4 +261,16 @@ export class BookService {
             message: 'ok',
         });
     }
+
+    bookNewsSuggest(options: IPaginationOptions): Promise<Pagination<Book>> {
+        return paginate<Book>(this.bookRepository, options, {
+            order: {
+                created_At: 'DESC',
+            },
+            where: {
+                is_active: true,
+            },
+            select: ['id', 'title', 'description', 'thumbnail_url', 'slug', 'stock', 'count_borrow_books'],
+        });
+    }
 }

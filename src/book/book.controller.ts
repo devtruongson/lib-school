@@ -33,6 +33,19 @@ import { updateStatusImage } from './dto/updateStatusImage.dto';
 export class BookController {
     constructor(private readonly bookService: BookService) {}
 
+    @Get('/news')
+    bookNewsSuggest(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('pageSize', new DefaultValuePipe(1), ParseIntPipe) pageSize: number = 1,
+    ): Promise<Pagination<Book>> {
+        return this.bookService.bookNewsSuggest({
+            limit: pageSize,
+            page: page,
+            cacheQueries: true,
+            route: ConfigEnum.URL_BE_BOOK_GET_ALL,
+        });
+    }
+
     @Get()
     findAllBooksByAdmin(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -42,7 +55,7 @@ export class BookController {
             limit: pageSize,
             page: page,
             cacheQueries: true,
-            route: ConfigEnum.URL_BE_CATE_GET_ALL,
+            route: ConfigEnum.URL_BE_BOOK_GET_ALL,
         });
     }
 
