@@ -129,4 +129,9 @@ export class BookController {
             route: ConfigEnum.URL_BE_BOOK_GET_ALL + '/top-brows',
         });
     }
+
+    @Get('/all-books')
+    getAllBookBuilder(): Promise<IRes> {
+        return this.bookService.getAllBookBuilder();
+    }
 }

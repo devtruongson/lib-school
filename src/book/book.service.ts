@@ -97,7 +97,7 @@ export class BookService {
     async updateBook(data: updateDTO, files: Express.Multer.File[]): Promise<IRes> {
         const checkBook: Book | null = await this.bookRepository.findOne({
             where: {
-                id: data.id,
+                id: parseInt(data.id),
             },
             relations: ['categories'], // Load categories khi lấy thông tin sách
         });
@@ -132,6 +132,15 @@ export class BookService {
             throw new HttpException('Danh Mục Của Bạn Không Tồn Tại Trong Hệ Thống!', HttpStatus.BAD_REQUEST);
         }
 
+        let thumbnail_url: string = data.thumbnail_url;
+        let file_image: Express.Multer.File[] = files;
+
+        if (data.is_change_thumbnail === 'true') {
+            data.image_delete.push(thumbnail_url);
+            const [thumnail, ...images] = files;
+            file_image = images;
+            thumbnail_url = thumnail.filename;
+        }
         if (data.image_delete.length > 0) {
             await Promise.all(
                 data.image_delete.map(async (item: string) => {
@@ -150,15 +159,6 @@ export class BookService {
             );
         }
 
-        let thumbnail_url: string = data.thumbnail_url;
-        let file_image: Express.Multer.File[] = files;
-
-        if (data.is_change_thumbnail) {
-            const [thumnail, ...images] = files;
-            file_image = images;
-            thumbnail_url = thumnail.filename;
-        }
-
         if (file_image && file_image.length > 0) {
             file_image.forEach(async (item: Express.Multer.File) => {
                 const imageCreate = this.imageRepository.create({
@@ -173,7 +173,7 @@ export class BookService {
 
         const stock_brows_update = checkBook.stock_brows + (parseInt(data.stock) - checkBook.stock_brows);
 
-        await this.bookRepository.update(data.id, {
+        await this.bookRepository.update(parseInt(data.id), {
             ...checkBook,
             title: data.title,
             description: data.description,
@@ -238,12 +238,12 @@ export class BookService {
     }
 
     async detailBook(slug: string): Promise<IRes> {
-        const book: Book | null = await this.bookRepository.findOne({
-            where: {
-                slug,
-            },
-            relations: ['images', 'categories'],
-        });
+        const book: Book | null = await this.bookRepository
+            .createQueryBuilder('book')
+            .leftJoinAndSelect('book.images', 'images', 'images.is_active = :isActive', { isActive: true })
+            .leftJoinAndSelect('book.categories', 'categories')
+            .where('book.slug = :slug', { slug })
+            .getOne();
 
         if (!book) {
             throw new HttpException('Book không tồn tại trong hệ thống!', HttpStatus.BAD_REQUEST);
@@ -287,6 +287,20 @@ export class BookService {
             order: {
                 count_borrow_books: 'DESC',
             },
+        });
+    }
+
+    async getAllBookBuilder(): Promise<IRes> {
+        const books = await this.bookRepository.find({
+            where: {
+                is_active: true,
+            },
+        });
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'Ok',
+            data: books,
         });
     }
 }

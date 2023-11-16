@@ -22,9 +22,15 @@ import { MailerService } from 'src/mailer/mailer.service';
 })
 export class BookModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(JwtAdminMiddleware).forRoutes({
-            path: '/book',
-            method: RequestMethod.ALL,
-        });
+        consumer.apply(JwtAdminMiddleware).forRoutes(
+            {
+                path: '/book',
+                method: RequestMethod.ALL,
+            },
+            {
+                path: '/book/update-image-status',
+                method: RequestMethod.PATCH,
+            },
+        );
     }
 }

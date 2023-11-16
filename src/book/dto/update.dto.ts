@@ -1,18 +1,18 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsString, Min } from 'class-validator';
 import { createDTO } from './create.dto';
 
 export class updateDTO extends createDTO {
-    @IsNumber()
     @IsNotEmpty()
-    id: number;
+    id: string;
 
     @IsNotEmpty()
     thumbnail_url: string;
 
-    @IsBoolean()
-    is_change_thumbnail: boolean;
+    @IsNotEmpty()
+    @IsNotEmpty()
+    is_change_thumbnail: string;
 
     @IsArray()
-    @IsString({ each: true })
+    @Min(0)
     image_delete: string[];
 }
