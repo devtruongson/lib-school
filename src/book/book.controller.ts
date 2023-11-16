@@ -101,7 +101,7 @@ export class BookController {
         }),
     )
     updateBook(@Body() data: updateDTO, @UploadedFiles() files: Express.Multer.File[]): Promise<IRes> {
-        if (data.is_change_thumbnail === 'true' && !files.length) {
+        if (data.is_change_thumbnail === 'true' && !files?.length) {
             throw new HttpException('Bạn phải tải ít nhất 1 ảnh!', HttpStatus.BAD_REQUEST);
         }
         return this.bookService.updateBook(data, files);
