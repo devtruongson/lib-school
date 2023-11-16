@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 import { createDTO } from './create.dto';
 
 export class updateDTO extends createDTO {
