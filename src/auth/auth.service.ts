@@ -29,7 +29,6 @@ export class AuthService {
 
     async registerUser(userDTO: registerDTO, req: Request, res: Response): Promise<User | void> {
         const checkUserExits = await this.checkUserExits(userDTO.email);
-
         if (checkUserExits) {
             throw new UserExitsException();
         }
@@ -193,6 +192,10 @@ export class AuthService {
             sendResponse({
                 statusCode: HttpStatus.OK,
                 message: 'Đã RefreshToken Thành Công!',
+                data: {
+                    access_token: Token.access_token,
+                    refresh_token: Token.refresh_token,
+                },
             }),
         );
     }

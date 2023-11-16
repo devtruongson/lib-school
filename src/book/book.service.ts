@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { createDTO } from './dto/create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from 'src/typeorm/entities/Book';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { Categories } from 'src/typeorm/entities/Cate';
 import { IRes } from 'src/utils/interface';
 import { Images } from 'src/typeorm/entities/Image';
@@ -48,7 +48,7 @@ export class BookService {
             throw new HttpException('Danh Mục Sách Bạn Chọn Không Tồn Tại Trong Hệ Thống!', HttpStatus.BAD_REQUEST);
         }
 
-        const bookCreate: Book = this.bookRepository.create({
+        const bookCreate = this.bookRepository.create({
             title: data.title,
             description: data.description,
             description_markdown: data.description_markdown,
@@ -59,6 +59,7 @@ export class BookService {
             categories: checkCate,
             meta_description: data.meta_description,
             meta_title: data.title,
+            stock_brows: parseInt(data.stock),
         });
 
         const bookSave = await this.bookRepository.save(bookCreate);
@@ -170,6 +171,8 @@ export class BookService {
             });
         }
 
+        const stock_brows_update = checkBook.stock_brows + (parseInt(data.stock) - checkBook.stock_brows);
+
         await this.bookRepository.update(data.id, {
             ...checkBook,
             title: data.title,
@@ -182,6 +185,7 @@ export class BookService {
             categories: checkCate,
             meta_description: data.meta_description,
             meta_title: data.title,
+            stock_brows: stock_brows_update,
         });
 
         return sendResponse({
@@ -271,6 +275,18 @@ export class BookService {
                 is_active: true,
             },
             select: ['id', 'title', 'description', 'thumbnail_url', 'slug', 'stock', 'count_borrow_books'],
+        });
+    }
+
+    getBookTopBrows(options: IPaginationOptions): Promise<Pagination<Book>> {
+        return paginate<Book>(this.bookRepository, options, {
+            where: {
+                is_active: true,
+                count_borrow_books: MoreThan(0),
+            },
+            order: {
+                count_borrow_books: 'DESC',
+            },
         });
     }
 }

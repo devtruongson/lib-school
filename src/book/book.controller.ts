@@ -116,4 +116,17 @@ export class BookController {
     deleteBook(@Param('id', ParseIntPipe) id: number) {
         return this.bookService.deleteBook(id);
     }
+
+    @Get('/top-brows')
+    getBookTopBrows(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('pageSize', new DefaultValuePipe(1), ParseIntPipe) pageSize: number = 1,
+    ): Promise<Pagination<Book>> {
+        return this.bookService.getBookTopBrows({
+            limit: pageSize,
+            page: page,
+            cacheQueries: true,
+            route: ConfigEnum.URL_BE_BOOK_GET_ALL + '/top-brows',
+        });
+    }
 }

@@ -41,6 +41,11 @@ export class Book {
     stock: number;
 
     @Column({
+        nullable: false,
+    })
+    stock_brows: number;
+
+    @Column({
         default: true,
     })
     is_active: boolean;
