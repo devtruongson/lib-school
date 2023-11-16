@@ -257,7 +257,7 @@ export class BookService {
     }
 
     async updateStatusImage(data: updateStatusImage): Promise<IRes> {
-        await this.bookRepository.update(data.id, {
+        await this.imageRepository.update(data.id, {
             is_active: data.is_active,
         });
         return sendResponse({
