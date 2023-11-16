@@ -16,6 +16,7 @@ import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginat
 import { MailerService } from 'src/mailer/mailer.service';
 import { User } from 'src/typeorm/entities/User';
 import { updateStatusImage } from './dto/updateStatusImage.dto';
+import { Book_Cate } from 'src/typeorm/entities/Book_Categorie';
 
 @Injectable()
 export class BookService {
@@ -23,6 +24,7 @@ export class BookService {
         @InjectRepository(Book) private readonly bookRepository: Repository<Book>,
         @InjectRepository(Categories) private readonly cateRepository: Repository<Categories>,
         @InjectRepository(Images) private readonly imageRepository: Repository<Images>,
+        @InjectRepository(Book_Cate) private readonly bookCateRepository: Repository<Book_Cate>,
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         private readonly mailService: MailerService,
     ) {}
@@ -56,7 +58,6 @@ export class BookService {
             stock: parseInt(data.stock),
             thumbnail_url: thumbnail_url.filename,
             slug: slugify(`${data.title} ${uuid4()}`),
-            categories: checkCate,
             meta_description: data.meta_description,
             meta_title: data.title,
             stock_brows: parseInt(data.stock),
@@ -87,6 +88,16 @@ export class BookService {
             });
         }
 
+        if (checkCate && checkCate.length > 0) {
+            checkCate.forEach(async (cate) => {
+                const cateBookSave = this.bookCateRepository.create({
+                    cate: cate,
+                    book: bookSave,
+                });
+                await this.bookCateRepository.save(cateBookSave);
+            });
+        }
+
         return sendResponse({
             statusCode: HttpStatus.OK,
             message: 'Bạn Đã Tạo Sách Thành Công!',
@@ -99,7 +110,6 @@ export class BookService {
             where: {
                 id: parseInt(data.id),
             },
-            relations: ['categories'], // Load categories khi lấy thông tin sách
         });
 
         if (!checkBook) {
@@ -119,11 +129,6 @@ export class BookService {
                 }
             }),
         );
-
-        // Xóa các categories cũ của sách
-        checkBook.categories = [];
-        // Thêm các categories mới vào sách
-        checkBook.categories = checkCate;
 
         if (!checkBook) {
             throw new HttpException('Sách Của Bạn Không Tồn Tại Trong Hệ Thống!', HttpStatus.BAD_REQUEST);
@@ -172,7 +177,6 @@ export class BookService {
         }
 
         const stock_brows_update = checkBook.stock_brows + (parseInt(data.stock) - checkBook.stock_brows);
-
         await this.bookRepository.update(parseInt(data.id), {
             ...checkBook,
             title: data.title,
@@ -181,12 +185,23 @@ export class BookService {
             is_active: data.is_active === 'true' ? true : false,
             stock: parseInt(data.stock),
             thumbnail_url,
-            slug: slugify(`${data.title} ${uuid4()}`),
-            categories: checkCate,
             meta_description: data.meta_description,
             meta_title: data.title,
             stock_brows: stock_brows_update,
         });
+
+        await this.bookCateRepository.delete({
+            book: checkBook,
+        });
+        if (checkCate && checkCate.length > 0) {
+            checkCate.forEach(async (cate) => {
+                const cateBookSave = this.bookCateRepository.create({
+                    cate: cate,
+                    book: checkBook,
+                });
+                await this.bookCateRepository.save(cateBookSave);
+            });
+        }
 
         return sendResponse({
             statusCode: HttpStatus.OK,
@@ -238,17 +253,17 @@ export class BookService {
     }
 
     async detailBook(slug: string): Promise<IRes> {
-        const book: Book | null = await this.bookRepository
-            .createQueryBuilder('book')
-            .leftJoinAndSelect('book.images', 'images', 'images.is_active = :isActive', { isActive: true })
-            .leftJoinAndSelect('book.categories', 'categories')
-            .where('book.slug = :slug', { slug })
-            .getOne();
-
+        const book: Book | null = await this.bookRepository.findOne({
+            relations: ['images', 'categories.cate'],
+            where: {
+                slug: slug,
+            },
+        });
         if (!book) {
             throw new HttpException('Book không tồn tại trong hệ thống!', HttpStatus.BAD_REQUEST);
         }
 
+        book.images = book.images.filter((item) => item.is_active);
         return sendResponse({
             statusCode: HttpStatus.OK,
             message: 'ok',

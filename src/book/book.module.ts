@@ -9,13 +9,14 @@ import { Categories } from 'src/typeorm/entities/Cate';
 import { Images } from 'src/typeorm/entities/Image';
 import { User } from 'src/typeorm/entities/User';
 import { MailerService } from 'src/mailer/mailer.service';
+import { Book_Cate } from 'src/typeorm/entities/Book_Categorie';
 
 @Module({
     imports: [
         MulterModule.register({
             dest: './files',
         }),
-        TypeOrmModule.forFeature([Book, Categories, Images, User]),
+        TypeOrmModule.forFeature([Book, Categories, Images, User, Book_Cate]),
     ],
     controllers: [BookController],
     providers: [BookService, MailerService],

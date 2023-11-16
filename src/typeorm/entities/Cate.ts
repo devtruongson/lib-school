@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Book_Cate } from './Book_Categorie';
 
 @Entity({
     name: 'categories',
@@ -23,6 +24,9 @@ export class Categories {
         default: true,
     })
     is_active: boolean;
+
+    @OneToMany(() => Book_Cate, (book) => book.book)
+    book: Book_Cate[];
 
     @Column({
         default: () => 'CURRENT_TIMESTAMP',

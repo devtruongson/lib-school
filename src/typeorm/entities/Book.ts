@@ -1,6 +1,6 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Images } from './Image';
-import { Categories } from './Cate';
+import { Book_Cate } from './Book_Categorie';
 
 @Entity({
     name: 'books',
@@ -30,7 +30,7 @@ export class Book {
     thumbnail_url: string;
 
     @OneToMany(() => Images, (image) => image.book)
-    images: Images;
+    images: Images[];
 
     @Column({ nullable: false })
     slug: string;
@@ -60,9 +60,8 @@ export class Book {
     })
     view_book: number;
 
-    @ManyToMany(() => Categories)
-    @JoinTable()
-    categories: Categories[];
+    @OneToMany(() => Book_Cate, (cate) => cate.book)
+    categories: Book_Cate[];
 
     @Column({
         default: () => 'CURRENT_TIMESTAMP',
