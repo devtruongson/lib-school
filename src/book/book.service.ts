@@ -141,7 +141,7 @@ export class BookService {
             file_image = images;
             thumbnail_url = thumnail.filename;
         }
-        if (data.image_delete.length > 0) {
+        if (data.image_delete && data.image_delete.length > 0) {
             await Promise.all(
                 data.image_delete.map(async (item: string) => {
                     try {
