@@ -12,7 +12,5 @@ export class updateDTO extends createDTO {
     @IsNotEmpty()
     is_change_thumbnail: string;
 
-    @IsArray()
-    @Min(0)
     image_delete: string[];
 }
