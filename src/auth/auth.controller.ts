@@ -38,6 +38,8 @@ export class AuthController {
     handleLogout(req: Request, res: Response) {
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
-        res.status(200).json('ok');
+        return res.status(200).json({
+            statusCode: 200,
+        });
     }
 }

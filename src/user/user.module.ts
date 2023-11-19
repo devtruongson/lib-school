@@ -16,10 +16,16 @@ export class UserModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(JwtMiddleware)
-            .forRoutes({
-                path: '/user/current-role',
-                method: RequestMethod.GET,
-            })
+            .forRoutes(
+                {
+                    path: '/user/current-role',
+                    method: RequestMethod.GET,
+                },
+                {
+                    path: '/user/current-user',
+                    method: RequestMethod.GET,
+                },
+            )
             .apply(JwtAdminMiddleware)
             .forRoutes(
                 {

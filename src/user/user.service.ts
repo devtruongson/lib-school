@@ -10,6 +10,7 @@ import { sendEmailUserDTO } from './dto/sendEmailUser.dto';
 import { MailerService } from 'src/mailer/mailer.service';
 import { sendResponse } from 'src/helpers/sendResponse';
 import { sendEmailManyUserDTO } from './dto/sendEmailManyUser.dto';
+import { UserNotExitsException } from 'src/helpers/exceptions';
 
 @Injectable()
 export class UserService {
@@ -72,5 +73,27 @@ export class UserService {
         } catch (error) {
             throw new BadRequestException();
         }
+    }
+
+    async getCurrentUser(req: Request): Promise<IRes> {
+        const user_token = req.user as IJwtPayload;
+
+        const user_check: User | null = await this.userRepository.findOne({
+            where: {
+                id: user_token.id,
+            },
+            relations: ['profile'],
+        });
+
+        if (!user_check) {
+            throw new UserNotExitsException();
+        }
+
+        const userSerializer = new userSessionSerializerDTO(user_check);
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+            data: userSerializer,
+        });
     }
 }

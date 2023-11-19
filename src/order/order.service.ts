@@ -168,6 +168,7 @@ export class OrderService {
             book: bookCheck,
         });
         const orderSave = await this.orderRepository.save(orderCreate);
+        delete orderCreate.user.password;
         return sendResponse({
             statusCode: HttpStatus.OK,
             message: 'ok',

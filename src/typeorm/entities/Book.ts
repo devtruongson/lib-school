@@ -15,7 +15,7 @@ export class Book {
     })
     title: string;
 
-    @Column()
+    @Column('longtext')
     meta_description: string;
 
     @Column()

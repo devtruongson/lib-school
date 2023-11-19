@@ -51,4 +51,10 @@ export class UserController {
     sendEmailManyUser(@Body() sendEmailManyUser: sendEmailManyUserDTO): Promise<IRes> {
         return this.userService.sendEmailManyUser(sendEmailManyUser);
     }
+
+    @Get('/current-user')
+    @UseInterceptors(ClassSerializerInterceptor)
+    getCurrentUser(@Req() req: Request): Promise<IRes> {
+        return this.userService.getCurrentUser(req);
+    }
 }
