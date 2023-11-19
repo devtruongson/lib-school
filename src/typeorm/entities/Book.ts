@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Images } from './Image';
 import { Book_Cate } from './Book_Categorie';
+import { Order } from './Order';
 
 @Entity({
     name: 'books',
@@ -62,6 +63,9 @@ export class Book {
 
     @OneToMany(() => Book_Cate, (cate) => cate.book)
     categories: Book_Cate[];
+
+    @OneToMany(() => Order, (order) => order.book)
+    order: Order[];
 
     @Column({
         default: () => 'CURRENT_TIMESTAMP',

@@ -15,6 +15,7 @@ import { CateModule } from './cate/cate.module';
 import { UploadModule } from './upload/upload.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OrderModule } from './order/order.module';
+import { Book_Cate } from './typeorm/entities/Book_Categorie';
 
 @Module({
     imports: [
@@ -27,7 +28,7 @@ import { OrderModule } from './order/order.module';
             username: 'root',
             password: 'fstack@1234',
             database: 'lib_school',
-            entities: [User, Order, Book, Profile, Images, Categories],
+            entities: [User, Order, Book, Profile, Images, Categories, Book_Cate],
             synchronize: true,
             autoLoadEntities: true,
         }),

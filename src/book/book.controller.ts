@@ -7,6 +7,7 @@ import {
     Get,
     HttpException,
     HttpStatus,
+    NotFoundException,
     Param,
     ParseIntPipe,
     Patch,
@@ -133,5 +134,42 @@ export class BookController {
     @Get('/all-books')
     getAllBookBuilder(): Promise<IRes> {
         return this.bookService.getAllBookBuilder();
+    }
+
+    @Get('/search-books')
+    handleSearchBook(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('pageSize', new DefaultValuePipe(1), ParseIntPipe) pageSize: number = 1,
+        @Query('q') q: string,
+        @Query('cate') cate: string = 'all',
+        @Query('is_stock') is_stock: string = 'true',
+    ): Promise<any> {
+        if (!q) {
+            throw new NotFoundException();
+        }
+        return this.bookService.handleSearchBook(q, cate, is_stock, {
+            limit: pageSize,
+            page: page,
+            cacheQueries: true,
+            route: ConfigEnum.URL_BE_BOOK_GET_ALL + '/search-books',
+        });
+    }
+
+    @Get('/get-book-relation')
+    relationBooks(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('pageSize', new DefaultValuePipe(1), ParseIntPipe) pageSize: number = 1,
+        @Query('slug') slug: string,
+    ): Promise<any> {
+        if (!slug) {
+            throw new NotFoundException();
+        }
+
+        return this.bookService.relationBooks(slug, {
+            limit: pageSize,
+            page: page,
+            cacheQueries: true,
+            route: ConfigEnum.URL_BE_BOOK_GET_ALL + '/get-book-relation',
+        });
     }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 import { Book } from './Book';
 
@@ -31,9 +31,8 @@ export class Order {
     })
     user: User;
 
-    @ManyToMany(() => Book)
-    @JoinTable()
-    books: Book[];
+    @ManyToOne(() => Book, (book) => book.order)
+    book: Book;
 
     @Column({
         default: () => 'CURRENT_TIMESTAMP',

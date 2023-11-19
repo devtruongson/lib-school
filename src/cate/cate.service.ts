@@ -50,6 +50,15 @@ export class CateService {
         return paginate<Categories>(this.cateRepository, options);
     }
 
+    filterAllPagin(option: IPaginationOptions): Promise<Pagination<Categories>> {
+        return paginate<Categories>(this.cateRepository, option, {
+            where: {
+                is_active: true,
+            },
+            select: ['id', 'title', 'slug'],
+        });
+    }
+
     async filterAll(): Promise<IRes> {
         const cates: Categories[] | [] = await this.cateRepository.find({
             where: {

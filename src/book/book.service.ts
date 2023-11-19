@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { createDTO } from './dto/create.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from 'src/typeorm/entities/Book';
-import { MoreThan, Repository } from 'typeorm';
+import { Like, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { Categories } from 'src/typeorm/entities/Cate';
 import { IRes } from 'src/utils/interface';
 import { Images } from 'src/typeorm/entities/Image';
@@ -317,5 +317,142 @@ export class BookService {
             message: 'Ok',
             data: books,
         });
+    }
+
+    async handleSearchBook(q: string, cate: string, is_stock: string, options: IPaginationOptions): Promise<any> {
+        const conditions = {
+            is_active: true,
+            stock_brows: MoreThanOrEqual(0),
+        };
+
+        let cateArr: number[] | null = null;
+        if (cate !== 'all') {
+            try {
+                if (Array.isArray(JSON?.parse(cate))) {
+                    cateArr = JSON.parse(cate);
+                }
+            } catch (error) {
+                console.log('error', error);
+            }
+        }
+
+        if (is_stock !== 'true') {
+            conditions.stock_brows = MoreThan(0);
+        }
+
+        const books = await paginate<Book>(this.bookRepository, options, {
+            order: {
+                count_borrow_books: 'DESC',
+            },
+            where: {
+                ...conditions,
+                title: Like(`%${q}%`),
+            },
+            relations: ['categories.cate'],
+            select: [
+                'id',
+                'title',
+                'thumbnail_url',
+                'slug',
+                'stock',
+                'count_borrow_books',
+                'description',
+                'meta_description',
+            ],
+        });
+
+        const bookFirst = {
+            items: [...books.items],
+            meta: books.meta,
+            links: books.links,
+        };
+
+        if (cateArr && cateArr.length > 0) {
+            const booksFilter = books.items.filter((item) => {
+                if (item.categories && item.categories.length > 0) {
+                    return item.categories.find((itemChild) => {
+                        return cateArr.find((childIdCate) => {
+                            return childIdCate === itemChild.cate.id;
+                        });
+                    });
+                }
+            });
+            bookFirst.items = booksFilter;
+        }
+
+        return bookFirst;
+    }
+
+    async relationBooks(slug: string, options: IPaginationOptions): Promise<any> {
+        const book = await this.bookRepository.findOne({
+            where: {
+                slug: slug,
+            },
+        });
+
+        if (!book) {
+            return paginate<Book>(this.bookRepository, options, {
+                order: {
+                    count_borrow_books: 'DESC',
+                },
+                where: {
+                    is_active: true,
+                },
+            });
+        }
+
+        const booksCate = await this.bookCateRepository.find({
+            where: {
+                book: book,
+            },
+            relations: ['cate'],
+        });
+
+        if (booksCate && booksCate.length === 0) {
+            return paginate<Book>(this.bookRepository, options, {
+                order: {
+                    count_borrow_books: 'DESC',
+                },
+                where: {
+                    is_active: true,
+                },
+            });
+        }
+
+        const books = await paginate<Book>(this.bookRepository, options, {
+            order: {
+                count_borrow_books: 'DESC',
+            },
+            where: {
+                is_active: true,
+            },
+            relations: ['categories.cate'],
+            select: [
+                'id',
+                'title',
+                'thumbnail_url',
+                'slug',
+                'stock',
+                'count_borrow_books',
+                'description',
+                'meta_description',
+            ],
+        });
+        const booksResponse = {
+            items: books.items,
+            meta: books.meta,
+            links: books.links,
+        };
+
+        booksResponse.items = booksResponse.items.filter((item) => {
+            if (item.categories && item.categories.length > 0) {
+                return item.categories.find((itemChild) => {
+                    return booksCate.find((childIdCate) => {
+                        return childIdCate.cate.id === itemChild.cate.id;
+                    });
+                });
+            }
+        });
+        return booksResponse;
     }
 }

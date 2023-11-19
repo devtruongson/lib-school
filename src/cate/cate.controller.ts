@@ -38,4 +38,17 @@ export class CateController {
     filterAll(): Promise<IRes> {
         return this.cateService.filterAll();
     }
+
+    @Get('/filter-pagination')
+    filterAllPagin(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('pageSize', new DefaultValuePipe(1), ParseIntPipe) pageSize: number = 1,
+    ): Promise<Pagination<Categories>> {
+        return this.cateService.filterAllPagin({
+            limit: pageSize,
+            page: page,
+            cacheQueries: true,
+            route: ConfigEnum.URL_BE_CATE_GET_ALL_FILTER,
+        });
+    }
 }
