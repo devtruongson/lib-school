@@ -4,9 +4,10 @@ import { CateController } from './cate.controller';
 import { JwtAdminMiddleware } from 'src/middlewares/admin.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Categories } from 'src/typeorm/entities/Cate';
+import { Book_Cate } from 'src/typeorm/entities/Book_Categorie';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Categories])],
+    imports: [TypeOrmModule.forFeature([Categories, Book_Cate])],
     controllers: [CateController],
     providers: [CateService],
 })

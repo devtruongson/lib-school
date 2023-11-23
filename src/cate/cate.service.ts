@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { createCateDTO } from './dto/createCate.dto';
 import { IRes } from 'src/utils/interface';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,10 +9,14 @@ import slugify from 'slugify';
 import { sendResponse } from 'src/helpers/sendResponse';
 import { updateCateDTO } from './dto/updateCate.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { Book_Cate } from 'src/typeorm/entities/Book_Categorie';
 
 @Injectable()
 export class CateService {
-    constructor(@InjectRepository(Categories) private readonly cateRepository: Repository<Categories>) {}
+    constructor(
+        @InjectRepository(Categories) private readonly cateRepository: Repository<Categories>,
+        @InjectRepository(Book_Cate) private readonly bookCateRepository: Repository<Book_Cate>,
+    ) {}
 
     async createCate(data: createCateDTO): Promise<IRes> {
         const newCate = this.cateRepository.create({
@@ -79,6 +83,37 @@ export class CateService {
                     label: item.title,
                 };
             }),
+        });
+    }
+
+    async getAllBookByCategory(cate: string): Promise<IRes> {
+        const categorie: Categories | null = await this.cateRepository.findOne({
+            where: {
+                slug: cate,
+            },
+        });
+
+        if (!categorie) {
+            throw new NotFoundException(`Categorie not found`);
+        }
+
+        const books = await this.bookCateRepository.find({
+            where: {
+                cate: categorie,
+            },
+            relations: ['book', 'cate'],
+        });
+
+        let bookResponse: Book_Cate[] | null;
+
+        if (books && books.length > 0) {
+            bookResponse = books.filter((item) => item.book.is_active);
+        }
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+            data: bookResponse ? bookResponse : [],
         });
     }
 }

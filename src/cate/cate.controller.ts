@@ -1,4 +1,14 @@
-import { Body, Controller, DefaultValuePipe, Get, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    DefaultValuePipe,
+    Get,
+    ParseIntPipe,
+    Post,
+    Put,
+    Query,
+} from '@nestjs/common';
 import { CateService } from './cate.service';
 import { createCateDTO } from './dto/createCate.dto';
 import { IRes } from 'src/utils/interface';
@@ -50,5 +60,13 @@ export class CateController {
             cacheQueries: true,
             route: ConfigEnum.URL_BE_CATE_GET_ALL_FILTER,
         });
+    }
+
+    @Get('/allbook')
+    getAllBookByCategory(@Query('cate') cate: string): Promise<IRes> {
+        if (!cate) {
+            throw new BadRequestException();
+        }
+        return this.cateService.getAllBookByCategory(cate);
     }
 }
