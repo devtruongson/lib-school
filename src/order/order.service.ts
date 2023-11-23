@@ -28,6 +28,7 @@ export class OrderService {
         const orders = await this.orderRepository.find({
             where: {
                 expire_give_book: LessThan(dateNow),
+                is_give_book_back: false,
             },
             relations: ['user', 'book'],
         });
@@ -77,6 +78,7 @@ export class OrderService {
                         user: userCheck,
                         expire_give_book: LessThan(dateNow),
                     },
+                    relations: ['book'],
                 });
             }
 
@@ -86,6 +88,7 @@ export class OrderService {
                         user: userCheck,
                         expire_give_book: MoreThan(dateNow),
                     },
+                    relations: ['book'],
                 });
             }
 
@@ -94,6 +97,7 @@ export class OrderService {
                     where: {
                         user: userCheck,
                     },
+                    relations: ['book'],
                 });
             }
         }

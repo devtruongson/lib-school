@@ -11,11 +11,14 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { sendResponse } from 'src/helpers/sendResponse';
 import { sendEmailManyUserDTO } from './dto/sendEmailManyUser.dto';
 import { UserNotExitsException } from 'src/helpers/exceptions';
+import { updateUserDTO } from './dto/updateUser.dto';
+import { Profile } from 'src/typeorm/entities/Profile';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(Profile) private readonly profileRepository: Repository<Profile>,
         private readonly mailService: MailerService,
     ) {}
 
@@ -94,6 +97,102 @@ export class UserService {
             statusCode: HttpStatus.OK,
             message: 'ok',
             data: userSerializer,
+        });
+    }
+
+    async handleCheckProfileValid(req: Request): Promise<IRes> {
+        const user_payload = req.user as IJwtPayload;
+
+        const userCheck: User | null = await this.userRepository.findOne({
+            where: {
+                id: user_payload.id,
+            },
+            relations: ['profile'],
+        });
+
+        if (!userCheck) {
+            throw new UserNotExitsException();
+        }
+
+        if (!userCheck.profile) {
+            return sendResponse({
+                statusCode: HttpStatus.OK,
+                message: 'ok',
+                data: {
+                    is_valid: false,
+                },
+            });
+        }
+
+        let is_valid = true;
+
+        const filedata = [
+            userCheck.id,
+            userCheck.email,
+            userCheck.fistName,
+            userCheck.lastName,
+            userCheck.is_verify_email,
+            userCheck.lastName,
+            userCheck.profile.address,
+            userCheck.profile.avatar_url,
+            userCheck.profile.birthday,
+            userCheck.profile.class,
+            userCheck.profile.phoneNumber,
+            userCheck.profile.school,
+        ];
+
+        for (let i = 0; i < filedata.length; i++) {
+            if (!filedata[i]) {
+                is_valid = false;
+                break;
+            }
+        }
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+            data: {
+                is_valid: is_valid,
+            },
+        });
+    }
+
+    async handleUpdateUser(req: Request, data: updateUserDTO): Promise<IRes> {
+        const user_payload = req.user as IJwtPayload;
+
+        const userCheck: User | null = await this.userRepository.findOne({
+            where: {
+                id: user_payload.id,
+            },
+            relations: ['profile'],
+        });
+
+        if (!userCheck) {
+            throw new UserNotExitsException();
+        }
+
+        if (!userCheck.profile) {
+            const profileCreate = this.profileRepository.create({
+                ...data.profile,
+            });
+            const profileSave = await this.profileRepository.save(profileCreate);
+            await this.userRepository.update(userCheck.id, {
+                profile: profileSave,
+            });
+        } else {
+            await this.profileRepository.update(userCheck.profile.id, {
+                ...data.profile,
+            });
+        }
+
+        await this.userRepository.update(userCheck.id, {
+            fistName: data.user.firstName,
+            lastName: data.user.lastName,
+        });
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
         });
     }
 }

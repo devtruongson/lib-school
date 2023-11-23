@@ -34,8 +34,8 @@ export class AuthController {
         return this.authService.refreshToken(req, res);
     }
 
-    @Post('/logout')
-    handleLogout(req: Request, res: Response) {
+    @Get('/logout')
+    handleLogout(@Req() req: Request, @Res() res: Response) {
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
         return res.status(200).json({

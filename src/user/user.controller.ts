@@ -6,6 +6,7 @@ import {
     Get,
     ParseIntPipe,
     Post,
+    Put,
     Query,
     Req,
     UseInterceptors,
@@ -18,6 +19,7 @@ import { ConfigEnum } from 'src/utils/enum';
 import { sendEmailUserDTO } from './dto/sendEmailUser.dto';
 import { IRes } from 'src/utils/interface';
 import { sendEmailManyUserDTO } from './dto/sendEmailManyUser.dto';
+import { updateUserDTO } from './dto/updateUser.dto';
 
 @Controller('user')
 export class UserController {
@@ -56,5 +58,15 @@ export class UserController {
     @UseInterceptors(ClassSerializerInterceptor)
     getCurrentUser(@Req() req: Request): Promise<IRes> {
         return this.userService.getCurrentUser(req);
+    }
+
+    @Get('/check-profile-valid')
+    handleCheckProfileValid(@Req() req: Request): Promise<IRes> {
+        return this.userService.handleCheckProfileValid(req);
+    }
+
+    @Put()
+    handleUpdateUser(@Req() req: Request, @Body() data: updateUserDTO): Promise<IRes> {
+        return this.userService.handleUpdateUser(req, data);
     }
 }

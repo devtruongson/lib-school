@@ -6,9 +6,10 @@ import { User } from 'src/typeorm/entities/User';
 import { JwtMiddleware } from 'src/middlewares/jwt.middleware';
 import { JwtAdminMiddleware } from 'src/middlewares/admin.middleware';
 import { MailerService } from 'src/mailer/mailer.service';
+import { Profile } from 'src/typeorm/entities/Profile';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User])],
+    imports: [TypeOrmModule.forFeature([User, Profile])],
     controllers: [UserController],
     providers: [UserService, MailerService],
 })
@@ -24,6 +25,14 @@ export class UserModule implements NestModule {
                 {
                     path: '/user/current-user',
                     method: RequestMethod.GET,
+                },
+                {
+                    path: '/user/check-profile-valid',
+                    method: RequestMethod.GET,
+                },
+                {
+                    path: '/user',
+                    method: RequestMethod.PUT,
                 },
             )
             .apply(JwtAdminMiddleware)
