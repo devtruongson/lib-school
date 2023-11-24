@@ -79,6 +79,9 @@ export class OrderService {
                         expire_give_book: LessThan(dateNow),
                     },
                     relations: ['book'],
+                    order: {
+                        time_order: 'DESC',
+                    },
                 });
             }
 
@@ -89,6 +92,9 @@ export class OrderService {
                         expire_give_book: MoreThan(dateNow),
                     },
                     relations: ['book'],
+                    order: {
+                        time_order: 'DESC',
+                    },
                 });
             }
 
@@ -98,6 +104,47 @@ export class OrderService {
                         user: userCheck,
                     },
                     relations: ['book'],
+                    order: {
+                        time_order: 'DESC',
+                    },
+                });
+            }
+        }
+    }
+
+    async getAllOrderByAdmin(filter: string, req: Request, options: IPaginationOptions): Promise<Pagination<Order>> {
+        const dateNow: Date = new Date();
+        switch (filter) {
+            case 'expires': {
+                return paginate<Order>(this.orderRepository, options, {
+                    where: {
+                        expire_give_book: LessThan(dateNow),
+                    },
+                    relations: ['book', 'user'],
+                    order: {
+                        time_order: 'DESC',
+                    },
+                });
+            }
+
+            case 'not-expires': {
+                return paginate<Order>(this.orderRepository, options, {
+                    where: {
+                        expire_give_book: MoreThan(dateNow),
+                    },
+                    relations: ['book', 'user'],
+                    order: {
+                        time_order: 'DESC',
+                    },
+                });
+            }
+
+            default: {
+                return paginate<Order>(this.orderRepository, options, {
+                    relations: ['book', 'user'],
+                    order: {
+                        time_order: 'DESC',
+                    },
                 });
             }
         }
@@ -177,6 +224,51 @@ export class OrderService {
             statusCode: HttpStatus.OK,
             message: 'ok',
             data: orderSave,
+        });
+    }
+
+    async lineChartAdmin(): Promise<number[]> {
+        const monthlyCounts: number[] = Array(12).fill(0);
+        const results = await this.orderRepository
+            .createQueryBuilder()
+            .select('MONTH(time_order) as month, COUNT(*) as count')
+            .groupBy('month')
+            .getRawMany();
+
+        results.forEach((result) => {
+            const month = result.month - 1;
+            monthlyCounts[month] = parseInt(result.count);
+        });
+        return monthlyCounts;
+    }
+
+    async updateIsGive(data: { id: number; is_give_book_back: boolean }): Promise<IRes> {
+        await this.orderRepository.update(data.id, {
+            is_give_book_back: data.is_give_book_back,
+        });
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+        });
+    }
+
+    async getOrderById(id: number): Promise<IRes> {
+        const order = await this.orderRepository.findOne({
+            where: {
+                id,
+            },
+            relations: ['book', 'user'],
+        });
+
+        if (!order) {
+            throw new BadRequestException();
+        }
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+            data: order,
         });
     }
 }
