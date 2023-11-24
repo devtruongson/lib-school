@@ -59,4 +59,18 @@ export class BlogService {
             data: null,
         });
     }
+
+    async getBlogBySlug(slug: string): Promise<IRes> {
+        const blog = await this.blogRepository.findOne({
+            where: {
+                slug: slug,
+            },
+        });
+
+        return sendResponse({
+            statusCode: HttpStatus.OK,
+            message: 'ok',
+            data: blog,
+        });
+    }
 }

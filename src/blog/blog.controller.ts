@@ -1,4 +1,16 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    DefaultValuePipe,
+    Delete,
+    Get,
+    Param,
+    ParseIntPipe,
+    Post,
+    Put,
+    Query,
+} from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { createBlogDTO } from './dto/createBlog.dto';
 import { IRes } from 'src/utils/interface';
@@ -50,5 +62,13 @@ export class BlogController {
             cacheQueries: true,
             route: ConfigEnum.URL_BE_ORDER_BLOG,
         });
+    }
+
+    @Get('/by-slug')
+    getBlogBySlug(@Query('slug') slug: string): Promise<IRes> {
+        if (!slug) {
+            throw new BadRequestException();
+        }
+        return this.blogService.getBlogBySlug(slug);
     }
 }
