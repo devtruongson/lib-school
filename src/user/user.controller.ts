@@ -69,4 +69,9 @@ export class UserController {
     handleUpdateUser(@Req() req: Request, @Body() data: updateUserDTO): Promise<IRes> {
         return this.userService.handleUpdateUser(req, data);
     }
+
+    @Get('/line-chart')
+    lineChartAdmin(): Promise<number[]> {
+        return this.userService.lineChartAdmin();
+    }
 }

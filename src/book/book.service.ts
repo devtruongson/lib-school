@@ -455,4 +455,19 @@ export class BookService {
         });
         return booksResponse;
     }
+
+    async lineChartAdmin(): Promise<number[]> {
+        const monthlyCounts: number[] = Array(12).fill(0);
+        const results = await this.bookRepository
+            .createQueryBuilder()
+            .select('MONTH(created_At) as month, COUNT(*) as count')
+            .groupBy('month')
+            .getRawMany();
+
+        results.forEach((result) => {
+            const month = result.month - 1;
+            monthlyCounts[month] = parseInt(result.count);
+        });
+        return monthlyCounts;
+    }
 }

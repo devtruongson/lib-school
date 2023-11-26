@@ -12,15 +12,9 @@ import { Blog } from 'src/typeorm/entities/Blog';
 })
 export class BlogModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(JwtAdminMiddleware).forRoutes(
-            {
-                path: '/blog',
-                method: RequestMethod.ALL,
-            },
-            {
-                path: '/blog/by-slug',
-                method: RequestMethod.GET,
-            },
-        );
+        consumer.apply(JwtAdminMiddleware).forRoutes({
+            path: '/blog',
+            method: RequestMethod.ALL,
+        });
     }
 }

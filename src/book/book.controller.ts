@@ -172,4 +172,9 @@ export class BookController {
             route: ConfigEnum.URL_BE_BOOK_GET_ALL + '/get-book-relation',
         });
     }
+
+    @Get('/line-chart')
+    lineChartAdmin(): Promise<number[]> {
+        return this.bookService.lineChartAdmin();
+    }
 }

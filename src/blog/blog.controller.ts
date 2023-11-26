@@ -71,4 +71,17 @@ export class BlogController {
         }
         return this.blogService.getBlogBySlug(slug);
     }
+
+    @Get('/client')
+    getAllBlogToClient(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('pageSize', new DefaultValuePipe(1), ParseIntPipe) pageSize: number = 1,
+    ): Promise<Pagination<Blog>> {
+        return this.blogService.getAllBlogToClient({
+            limit: pageSize,
+            page: page,
+            cacheQueries: true,
+            route: ConfigEnum.URL_BE_ORDER_BLOG + '/client',
+        });
+    }
 }

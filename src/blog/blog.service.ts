@@ -30,6 +30,12 @@ export class BlogService {
         return paginate<Blog>(this.blogRepository, options);
     }
 
+    getAllBlogToClient(options: IPaginationOptions): Promise<Pagination<Blog>> {
+        return paginate<Blog>(this.blogRepository, options, {
+            is_active: true,
+        });
+    }
+
     getBlogNew(options: IPaginationOptions): Promise<Pagination<Blog>> {
         return paginate<Blog>(this.blogRepository, options, {
             is_active: true,
