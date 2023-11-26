@@ -61,12 +61,12 @@ export class BookController {
     }
 
     @Get('/detail/:slug')
-    detailBook(@Param('slug') slug: string) {
+    detailBook(@Param('slug') slug: string, @Query('is_all') isAll: string = 'true') {
         if (!slug) {
             throw new BadRequestException();
         }
 
-        return this.bookService.detailBook(slug);
+        return this.bookService.detailBook(slug, isAll);
     }
 
     @Patch('/update-image-status')

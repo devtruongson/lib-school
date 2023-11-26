@@ -252,7 +252,7 @@ export class BookService {
         return paginate<Book>(this.bookRepository, options);
     }
 
-    async detailBook(slug: string): Promise<IRes> {
+    async detailBook(slug: string, isAll: string): Promise<IRes> {
         const book: Book | null = await this.bookRepository.findOne({
             relations: ['images', 'categories.cate'],
             where: {
@@ -260,10 +260,13 @@ export class BookService {
             },
         });
         if (!book) {
-            throw new HttpException('Book không tồn tại trong hệ thống!', HttpStatus.BAD_REQUEST);
+            throw new HttpExisAllception('Book không tồn tại trong hệ thống!', HttpStatus.BAD_REQUEST);
         }
 
-        book.images = book.images.filter((item) => item.is_active);
+        if (isAll === 'true') {
+            book.images = book.images.filter((item) => item.is_active);
+        }
+
         return sendResponse({
             statusCode: HttpStatus.OK,
             message: 'ok',
