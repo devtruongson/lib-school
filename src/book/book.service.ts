@@ -260,7 +260,7 @@ export class BookService {
             },
         });
         if (!book) {
-            throw new HttpExisAllception('Book không tồn tại trong hệ thống!', HttpStatus.BAD_REQUEST);
+            throw new HttpException('Book không tồn tại trong hệ thống!', HttpStatus.BAD_REQUEST);
         }
 
         if (isAll === 'true') {
