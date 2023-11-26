@@ -79,4 +79,14 @@ export class BlogService {
             data: blog,
         });
     }
+
+    async getAllBlog() {
+        const blogs = await this.blogRepository.find({
+            where: {
+                is_active: true,
+            },
+        });
+
+        return sendResponse({ statusCode: HttpStatus.OK, message: 'ok', data: blogs });
+    }
 }

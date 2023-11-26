@@ -84,4 +84,9 @@ export class BlogController {
             route: ConfigEnum.URL_BE_ORDER_BLOG + '/client',
         });
     }
+
+    @Get('/all-blog')
+    getAllBlog() {
+        return this.blogService.getAllBlog();
+    }
 }
