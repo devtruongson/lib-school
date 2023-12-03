@@ -18,6 +18,10 @@ import { OrderModule } from './order/order.module';
 import { Book_Cate } from './typeorm/entities/Book_Categorie';
 import { Blog } from './typeorm/entities/Blog';
 import { BlogModule } from './blog/blog.module';
+import { Location } from './typeorm/entities/Location';
+import { ApplicationIndustry } from './typeorm/entities/ApplicationIndustry';
+import { HitPoint } from './typeorm/entities/HitPoint';
+import { PointModule } from './point/point.module';
 
 @Module({
     imports: [
@@ -30,7 +34,19 @@ import { BlogModule } from './blog/blog.module';
             username: 'root',
             password: 'fstack@1234',
             database: 'lib_school',
-            entities: [User, Order, Book, Profile, Images, Categories, Book_Cate, Blog],
+            entities: [
+                User,
+                Order,
+                Book,
+                Profile,
+                Images,
+                Categories,
+                Book_Cate,
+                Blog,
+                Location,
+                ApplicationIndustry,
+                HitPoint,
+            ],
             synchronize: true,
             autoLoadEntities: true,
         }),
@@ -42,6 +58,7 @@ import { BlogModule } from './blog/blog.module';
         ScheduleModule.forRoot(),
         OrderModule,
         BlogModule,
+        PointModule,
     ],
 })
 export class AppModule {}
